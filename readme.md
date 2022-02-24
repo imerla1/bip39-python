@@ -10,11 +10,7 @@ While i was reading `Andreas M. Antonopoulos` and Dr. `Dr. Gavin Woods` genious 
 only `python` Version >= `3.6`
 all used modules are part of standard library so we don't need to install any additional dependences.
 
-# Configuration File
-there is one main configuration file called `config.yaml`
-there are 2 main configurations
- - TestConfig
- - ProductionConfig
+
 
 # Run the code
 we need to pass only one command line argument to the code to run 
