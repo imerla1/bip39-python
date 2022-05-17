@@ -6,6 +6,11 @@ import binascii
 import textwrap
 import os
 import sys
+from rich.console import Console
+from rich.table import Table
+from rich import print
+from rich.panel import Panel
+from rich.text import Text
 
 
 class EntropyRangeError(Exception):
@@ -13,8 +18,20 @@ class EntropyRangeError(Exception):
     pass
 
 
-entropy_bits = sys.argv[-1]
-print(f"Entropy length = {entropy_bits} bits")
+console = Console()
+table = Table(title="basic data")
+table.add_column("entropy length", style="cyan")
+table.add_column("Checksum length", style="magenta")
+table.add_column("checksum", style="red")
+
+
+try:
+    entropy_bits = int(sys.argv[-1])
+except ValueError:
+    console.print(
+        "Entropy bits must be multiple of 32 bits in range 128<=entropy<=256")
+    sys.exit()
+
 '''
 As defined in BIP39, the entropy must be a multiple of 32 bits, and its size must be between 128 and 256 bits.
 Therefore the possible values for `strength` are 128, 160, 192, 224 and 256.
@@ -37,8 +54,9 @@ def generate_rand_bits(n: int = 128) -> str:
 
 
 entropy = generate_rand_bits(int(entropy_bits))
-print(f"Entropy = {entropy}")
-
+# print(f"Entropy = {entropy}")
+panel = Panel(Text(f"Entropy: \n{entropy}", justify="left", style="cyan bold"))
+print(panel)
 
 '''
 In sha256 the hash is calculated wrongly. No Utf8 encoding may be performed. 
@@ -64,17 +82,22 @@ def calculate_checksum(entropy: str) -> str:
         int(entropy_hash, base=16)).lstrip('0b').zfill(256)
 
     checksum_bits = int(entropy_bits) // 32
-    print(f"Checksum length = {checksum_bits} bits")
     checksum = entropy_hash_to_binary[:checksum_bits]
     return checksum
 
 
 checksum = calculate_checksum(entropy)
-print(f"Checksum = {checksum}")
+table.add_row(
+    f"{entropy_bits} bits", f"{entropy_bits // 32} bits", checksum
+)
+console.print(table)
 
 # Entropy + checksum
 whole_entropy = entropy + checksum
-print(f"Entropy + Checksum = {whole_entropy}")
+
+entropy_checksum_panel = Panel(Text(
+    f"Entropy + Checksum: \n{whole_entropy}", justify="left", style="cyan bold"))
+print(entropy_checksum_panel)
 
 
 def divide_whole_entropy_to_sections(entropy: str) -> list:
@@ -84,7 +107,12 @@ def divide_whole_entropy_to_sections(entropy: str) -> list:
 
 
 eleven_bit_sections = divide_whole_entropy_to_sections(whole_entropy)
-print(f"11 bit Sections, {eleven_bit_sections}")
+print(f"Eleven bit sections: total={len(whole_entropy) // 11} sections")
+print(eleven_bit_sections)
+
+words_table = Table(title="generated mnemonic words")
+words_table.add_column("word index", style="green bold")
+words_table.add_column("word", style="cyan")
 
 
 def get_mnemonic_words(filename: str = "words.txt") -> list:
@@ -109,8 +137,23 @@ for section_bits in eleven_bit_sections:
     word = mnemonic_words_list[section_decimal_value]
     word_indexes.append(section_decimal_value)
     res_words.append(word)
-print(f"Word Indexes {word_indexes}")
-print("Generated Mnemonic Words")
-print(res_words)
+    words_table.add_row(str(section_decimal_value), str(word))
+console.print(words_table)
+console.print("whole data as json:", style="red underline")
+whole_data_json = {
+    "entropy": {
+		"entropy_bits": entropy_bits,
+		"entropy": entropy
+	},
+    "checksum_lenth": f"{entropy_bits // 32} bits",
+    "checksum": checksum,
+    "entropyAndChecksum": whole_entropy,
+    "eleven_bit_sections_count": f"{len(whole_entropy) // 11} sections",
+    "eleven_bit_sections_array": eleven_bit_sections,
+	"mnemonic word indexes": word_indexes,
+	"mnemonic words": res_words
+
+}
+print(whole_data_json)
 
 # GOSH we implement BIP39 Protocolo well done george well done 👏 👏 👏
