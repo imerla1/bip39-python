@@ -7,8 +7,10 @@ While i was reading `Andreas M. Antonopoulos` and Dr. `Dr. Gavin Woods` genious 
 
 ## dependences
 
-only `python` Version >= `3.6`
-all used modules are part of standard library so we don't need to install any additional dependences.
+# install dependences
+```
+pip install -r requirements.txt
+```
 
 
 
