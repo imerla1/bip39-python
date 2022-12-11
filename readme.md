@@ -1,6 +1,6 @@
 # BIP 39 protocol implementation
 
-Python implementation of BIP39: Mnemonic code for generating deterministic keys
+This project is a Python implementation of the BIP39 (Bitcoin Improvement Proposal 39) specification. BIP39 is a standardized way of generating a mnemonic phrase that can be used as a seed for generating the private keys of a cryptocurrency wallet. This implementation allows users to generate a mnemonic phrase and use it to create a cryptocurrency wallet using the BIP39 specification
 
 # Inspiration
 While i was reading `Andreas M. Antonopoulos` and Dr. `Dr. Gavin Woods` genious book `Mastering Ethereum` i Came up with the idea to implemented BIP-39 Protocol
