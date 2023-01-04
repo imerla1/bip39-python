@@ -7,6 +7,7 @@ from rich.table import Table
 from rich import print
 from rich.panel import Panel
 from rich.text import Text
+import json
 
 
 class EntropyRangeError(Exception):
@@ -152,3 +153,15 @@ whole_data_json = {
 print(whole_data_json)
 
 
+def save_output_to_file(filename: str = 'output.json'):
+    print("saving output")
+    if not (filename.endswith('.json')):
+        raise ValueError("file format must be json")
+    with open(filename, "w") as json_file:
+        json.dump(whole_data_json, json_file, indent=2)
+
+
+save_output = str(input("Save output to file? Y\\N "))
+if save_output in ("y", "Y", "N", 'n'):
+    if save_output.lower() == 'y':
+        save_output_to_file()
