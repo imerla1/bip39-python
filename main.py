@@ -1,10 +1,6 @@
 import hashlib
-import random
 import secrets
-import sys
-import binascii
 import textwrap
-import os
 import sys
 from rich.console import Console
 from rich.table import Table
@@ -23,7 +19,6 @@ table = Table(title="basic data")
 table.add_column("entropy length", style="cyan")
 table.add_column("Checksum length", style="magenta")
 table.add_column("checksum", style="red")
-
 
 try:
     entropy_bits = int(sys.argv[-1])
@@ -47,7 +42,7 @@ if int(entropy_bits) % 32 != 0:
 def generate_rand_bits(n: int = 128) -> str:
     # Generates sequence from 128 to 256 bits
     if not isinstance(n, int):
-        raise TypeError("n Must be interger")
+        raise TypeError("n Must be integer")
     seq = secrets.randbits(n)
     rand_bin = bin(seq)
     return rand_bin[2:].zfill(n)  # To avoid 0b at the begging
@@ -74,7 +69,7 @@ def bitstring_to_bytes(s: str) -> bytes:
 
 
 def calculate_checksum(entropy: str) -> str:
-    # Calculateing checksum
+    # Calculating checksum
     entropy_hash = hashlib.sha256(bitstring_to_bytes(entropy)).hexdigest()
 
     # We will extract first n bits to calculate Checksum
@@ -129,7 +124,7 @@ def get_mnemonic_words(filename: str = "words.txt") -> list:
 # All 2048 words list
 mnemonic_words_list = get_mnemonic_words()
 
-res_words = []  # initialize empty list later we will store 12 mneumonic words here
+res_words = []  # initialize empty list later we will store 12 mnemonic words here
 word_indexes = []
 
 for section_bits in eleven_bit_sections:
@@ -142,18 +137,18 @@ console.print(words_table)
 console.print("whole data as json:", style="red underline")
 whole_data_json = {
     "entropy": {
-		"entropy_bits": entropy_bits,
-		"entropy": entropy
-	},
-    "checksum_lenth": f"{entropy_bits // 32} bits",
+        "entropy_bits": entropy_bits,
+        "entropy": entropy
+    },
+    "checksum_length": f"{entropy_bits // 32} bits",
     "checksum": checksum,
     "entropyAndChecksum": whole_entropy,
     "eleven_bit_sections_count": f"{len(whole_entropy) // 11} sections",
     "eleven_bit_sections_array": eleven_bit_sections,
-	"mnemonic word indexes": word_indexes,
-	"mnemonic words": res_words
+    "mnemonic word indexes": word_indexes,
+    "mnemonic words": res_words
 
 }
 print(whole_data_json)
 
-# GOSH we implement BIP39 Protocolo well done george well done 👏 👏 👏
+
