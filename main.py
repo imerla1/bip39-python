@@ -48,9 +48,9 @@ def generate_rand_bits(n: int = 128) -> str:
     return rand_bin[2:].zfill(n)  # To avoid 0b at the begging
 
 
-entropy = generate_rand_bits(int(entropy_bits))
+_entropy = generate_rand_bits(int(entropy_bits))
 # print(f"Entropy = {entropy}")
-panel = Panel(Text(f"Entropy: \n{entropy}", justify="left", style="cyan bold"))
+panel = Panel(Text(f"Entropy: \n{_entropy}", justify="left", style="cyan bold"))
 print(panel)
 
 '''
@@ -81,14 +81,14 @@ def calculate_checksum(entropy: str) -> str:
     return checksum
 
 
-checksum = calculate_checksum(entropy)
+calculated_checksum = calculate_checksum(_entropy)
 table.add_row(
-    f"{entropy_bits} bits", f"{entropy_bits // 32} bits", checksum
+    f"{entropy_bits} bits", f"{entropy_bits // 32} bits", calculated_checksum
 )
 console.print(table)
 
 # Entropy + checksum
-whole_entropy = entropy + checksum
+whole_entropy = _entropy + calculated_checksum
 
 entropy_checksum_panel = Panel(Text(
     f"Entropy + Checksum: \n{whole_entropy}", justify="left", style="cyan bold"))
@@ -138,10 +138,10 @@ console.print("whole data as json:", style="red underline")
 whole_data_json = {
     "entropy": {
         "entropy_bits": entropy_bits,
-        "entropy": entropy
+        "entropy": _entropy
     },
     "checksum_length": f"{entropy_bits // 32} bits",
-    "checksum": checksum,
+    "checksum": calculated_checksum,
     "entropyAndChecksum": whole_entropy,
     "eleven_bit_sections_count": f"{len(whole_entropy) // 11} sections",
     "eleven_bit_sections_array": eleven_bit_sections,
