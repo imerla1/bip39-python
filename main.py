@@ -10,6 +10,8 @@ from rich.text import Text
 import json
 
 
+__author__ = "imerla"
+
 class EntropyRangeError(Exception):
     # Custom exception
     pass
